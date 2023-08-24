@@ -1,0 +1,11 @@
+# Misskeyのホスト名とAPIトークンを入力後、MiConfig.pyにリネームして下さい
+
+from misskey import Misskey
+
+TITLE = "Mikukey"
+WIDTH = 1024
+HEIGHT = 600
+
+host = "Misskeyのホスト名 (例: misskey.io)"
+api = Misskey(host)
+api.token = "MisskeyのAPIトークン"
