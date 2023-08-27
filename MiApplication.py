@@ -48,6 +48,8 @@ class Application(tkinter.Frame):
         self.master.geometry(str(MiConfig.WIDTH) + "x" + str(MiConfig.HEIGHT))
         self.master.title(MiConfig.TITLE)
         self.master.resizable(0, 0)
+        photo = tkinter.PhotoImage(file = "./assets/icon.png")
+        self.master.iconphoto(False, photo)
 
         self.note_entry = scrolledtext.ScrolledText(self.master)
         self.note_entry.place(x = 0, y = 0, w = MiConfig.WIDTH - 100, h = 60)
