@@ -12,10 +12,15 @@ class Application(tkinter.Frame):
         else:
             timeline = MiAPI.timeline(self.since_id)
         for i in range(len(timeline)):
+            userid = ""
+            if timeline[i]["user"]["host"] != None:
+                userid = "@" + timeline[i]["user"]["username"] + "@" + timeline[i]["user"]["host"]
+            else:
+                userid = "@" + timeline[i]["user"]["username"] + "@" + MiConfig.host
             self.notes.append(MiNote.Note(
                 timeline[i]["user"]["id"],
                 timeline[i]["user"]["name"],
-                "@" + timeline[i]["user"]["username"] + "@" + timeline[i]["user"]["host"],
+                userid,
                 timeline[i]["text"],
                 timeline[i]["createdAt"]
             ))

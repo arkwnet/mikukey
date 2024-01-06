@@ -1,5 +1,5 @@
 # Mikukey
-# Copyright (c) 2023 Sora Arakawa
+# Copyright (c) 2023,2024 Sora Arakawa
 # Licensed under the MIT License
 
 import tkinter
