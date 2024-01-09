@@ -7,6 +7,10 @@ import MiNote
 
 class Application(tkinter.Frame):
     def loop(self):
+        self.update()
+        self.after(1000 * 60, self.loop)
+
+    def update(self):
         if self.since_id == "":
             timeline = MiAPI.timeline(None)
         else:
@@ -39,11 +43,12 @@ class Application(tkinter.Frame):
                         self.notes[i].timestamp
                     )
                 )
-        self.after(1000 * 60, self.loop)
+        return
 
     def post(self):
         MiAPI.post(self.note_entry.get("1.0", "end-1c"))
         self.note_entry.delete("1.0", "end-1c")
+        self.update()
         return
 
     def __init__(self, master = None):
