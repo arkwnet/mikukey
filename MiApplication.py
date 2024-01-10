@@ -16,18 +16,20 @@ class Application(tkinter.Frame):
         else:
             timeline = MiAPI.timeline(self.since_id)
         for i in range(len(timeline)):
-            userid = ""
-            if timeline[i]["user"]["host"] != None:
-                userid = "@" + timeline[i]["user"]["username"] + "@" + timeline[i]["user"]["host"]
-            else:
-                userid = "@" + timeline[i]["user"]["username"] + "@" + MiConfig.host
-            self.notes.append(MiNote.Note(
-                timeline[i]["user"]["id"],
-                timeline[i]["user"]["name"],
-                userid,
-                timeline[i]["text"],
-                timeline[i]["createdAt"]
-            ))
+            if self.id_list.count(timeline[i]["id"]) == 0:
+                userid = ""
+                if timeline[i]["user"]["host"] != None:
+                    userid = "@" + timeline[i]["user"]["username"] + "@" + timeline[i]["user"]["host"]
+                else:
+                    userid = "@" + timeline[i]["user"]["username"] + "@" + MiConfig.host
+                self.notes.append(MiNote.Note(
+                    timeline[i]["id"],
+                    timeline[i]["user"]["name"],
+                    userid,
+                    timeline[i]["text"],
+                    timeline[i]["createdAt"]
+                ))
+                self.id_list.append(timeline[i]["id"])
         if len(timeline) > 0:
             self.since_id = timeline[0]["id"]
             self.notes = MiNote.sort_notes(self.notes)
@@ -54,6 +56,7 @@ class Application(tkinter.Frame):
     def __init__(self, master = None):
         super().__init__(master)
         self.notes = []
+        self.id_list = []
         self.since_id = ""
         self.master.geometry(str(MiConfig.WIDTH) + "x" + str(MiConfig.HEIGHT))
         self.master.title(MiConfig.TITLE)
