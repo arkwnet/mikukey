@@ -33,3 +33,17 @@ def post(text):
     res = urllib.request.urlopen(req)
     body = res.read()
     return
+
+def i():
+    url = "https://" + MiConfig.host + "/api/i"
+    data = {
+        "i": MiConfig.token
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "User-Agent": "mozilla/5.0"
+    }
+    req = urllib.request.Request(url, data = json.dumps(data).encode("utf-8"), headers = headers, method = "POST")
+    res = urllib.request.urlopen(req)
+    body = res.read()
+    return json.loads(body)

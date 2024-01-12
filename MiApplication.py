@@ -4,9 +4,19 @@ from tkinter import scrolledtext
 import MiAPI
 import MiConfig
 import MiNote
+import MiProfile
 
 class Application(tkinter.Frame):
     def loop(self):
+        if self.is_init == False:
+            i = MiAPI.i()
+            self.i = MiProfile.Profile(i["id"], i["name"], i["username"], i["host"])
+            self.profile_name["text"] = self.i.name
+            if self.i.host == None:
+                self.profile_id["text"] = "@" + self.i.username + "@" + MiConfig.host
+            else:
+                self.profile_id["text"] = "@" + self.i.username + "@" + self.i.host
+            is_init = True
         self.update()
         self.after(1000 * 60, self.loop)
 
@@ -55,8 +65,10 @@ class Application(tkinter.Frame):
 
     def __init__(self, master = None):
         super().__init__(master)
-        self.notes = []
+        self.i = None
         self.id_list = []
+        self.is_init = False
+        self.notes = []
         self.since_id = ""
         self.master.geometry(str(MiConfig.WIDTH) + "x" + str(MiConfig.HEIGHT))
         self.master.title(MiConfig.TITLE)
@@ -64,9 +76,15 @@ class Application(tkinter.Frame):
         photo = tkinter.PhotoImage(file = "./assets/icon.png")
         self.master.iconphoto(False, photo)
 
-        self.note_entry = scrolledtext.ScrolledText(self.master)
-        self.note_entry.place(x = 0, y = 0, w = MiConfig.WIDTH - 100, h = 60)
+        self.profile_canvas = tkinter.Canvas(self.master, bg = "#757575")
+        self.profile_canvas.place(x = 6, y = 6, w = 48, h = 48)
+        self.profile_name = tkinter.Label(self.master, font = ("sans-serif", "12", "bold"), fg = "#000000")
+        self.profile_name.place(x = 60, y = 12)
+        self.profile_id = tkinter.Label(self.master, font = ("sans-serif", "10"), fg = "#757575")
+        self.profile_id.place(x = 60, y = 30)
 
+        self.note_entry = scrolledtext.ScrolledText(self.master)
+        self.note_entry.place(x = 250, y = 0, w = MiConfig.WIDTH - 350, h = 60)
         self.note_button_post = tkinter.Button(self.master, text = "ノート", command = self.post)
         self.note_button_post.place(x = MiConfig.WIDTH - 100, y = 30, w = 100, h = 30)
 
