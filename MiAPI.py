@@ -47,3 +47,13 @@ def i():
     res = urllib.request.urlopen(req)
     body = res.read()
     return json.loads(body)
+
+def download(url, path):
+    headers = {
+        "User-Agent": "mozilla/5.0"
+    }
+    req = urllib.request.Request(url, headers = headers)
+    with urllib.request.urlopen(req) as file_web:
+        with open(path, "wb") as file_local:
+            file_local.write(file_web.read())
+    return

@@ -1,6 +1,7 @@
 class Profile:
-    def __init__(self, id, name, username, host):
-        self.id = id
-        self.name = name
-        self.username = username
-        self.host = host
+    def __init__(self, i):
+        self.id = i["id"]
+        self.name = i["name"]
+        self.username = i["username"]
+        self.host = i["host"]
+        self.avatar_url = i["avatarUrl"]

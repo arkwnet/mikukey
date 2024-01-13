@@ -1,3 +1,5 @@
+import os
+from PIL import Image, ImageTk
 import tkinter
 import tkinter.ttk
 from tkinter import scrolledtext
@@ -9,8 +11,14 @@ import MiProfile
 class Application(tkinter.Frame):
     def loop(self):
         if self.is_init == False:
-            i = MiAPI.i()
-            self.i = MiProfile.Profile(i["id"], i["name"], i["username"], i["host"])
+            if os.path.isdir("temp") == False:
+                os.mkdir("temp")
+            self.i = MiProfile.Profile(MiAPI.i())
+            MiAPI.download(self.i.avatar_url, "temp/profile_icon.png")
+            image = Image.open("temp/profile_icon.png")                                 
+            image = image.resize((48, 48))
+            self.profile_image = ImageTk.PhotoImage(image)
+            self.profile_icon.create_image(0, 0, image = self.profile_image, anchor = tkinter.NW)
             self.profile_name["text"] = self.i.name
             if self.i.host == None:
                 self.profile_id["text"] = "@" + self.i.username + "@" + MiConfig.host
@@ -82,9 +90,10 @@ class Application(tkinter.Frame):
         self.timeline.column(3, width = 400, anchor = "nw")
         self.timeline.column(4, width = 200, anchor = "nw")
         self.timeline.place(x = 0, y = 0, w = MiConfig.WIDTH, h = MiConfig.HEIGHT - 60)
-
-        self.profile_canvas = tkinter.Canvas(self.master, bg = "#757575")
-        self.profile_canvas.place(x = 6, y = MiConfig.HEIGHT - 54, w = 48, h = 48)
+        
+        self.profile_image = None
+        self.profile_icon = tkinter.Canvas(self.master)
+        self.profile_icon.place(x = 6, y = MiConfig.HEIGHT - 54, w = 48, h = 48)
         self.profile_name = tkinter.Label(self.master, font = ("sans-serif", "12", "bold"), fg = "#000000")
         self.profile_name.place(x = 60, y = MiConfig.HEIGHT - 48)
         self.profile_id = tkinter.Label(self.master, font = ("sans-serif", "10"), fg = "#757575")
