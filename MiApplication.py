@@ -5,6 +5,7 @@ import tkinter.ttk
 from tkinter import scrolledtext
 import MiAPI
 import MiConfig
+import MiMeta
 import MiNote
 import MiProfile
 
@@ -13,12 +14,18 @@ class Application(tkinter.Frame):
         if self.is_init == False:
             if os.path.isdir("temp") == False:
                 os.mkdir("temp")
+            self.meta = MiMeta.Meta(MiAPI.call("meta", {}))
+            MiAPI.download(self.meta.icon_url, "temp/server_icon.png")
+            image = Image.open("temp/server_icon.png")                                 
+            image = image.resize((38, 38))
+            self.server_icon_image = ImageTk.PhotoImage(image)
+            self.server_icon.create_image(0, 0, image = self.server_icon_image, anchor = tkinter.NW)
             self.i = MiProfile.Profile(MiAPI.i())
             MiAPI.download(self.i.avatar_url, "temp/profile_icon.png")
             image = Image.open("temp/profile_icon.png")                                 
             image = image.resize((48, 48))
-            self.profile_image = ImageTk.PhotoImage(image)
-            self.profile_icon.create_image(0, 0, image = self.profile_image, anchor = tkinter.NW)
+            self.profile_icon_image = ImageTk.PhotoImage(image)
+            self.profile_icon.create_image(0, 0, image = self.profile_icon_image, anchor = tkinter.NW)
             self.profile_name["text"] = self.i.name
             if self.i.host == None:
                 self.profile_id["text"] = "@" + self.i.username + "@" + MiConfig.host
@@ -66,9 +73,11 @@ class Application(tkinter.Frame):
         return
 
     def post(self):
-        MiAPI.post(self.note_entry.get("1.0", "end-1c"))
-        self.note_entry.delete("1.0", "end-1c")
-        self.update()
+        text = self.note_entry.get("1.0", "end-1c")
+        if text != "":
+            MiAPI.post(text)
+            self.note_entry.delete("1.0", "end-1c")
+            self.update()
         return
 
     def __init__(self, master = None):
@@ -76,27 +85,38 @@ class Application(tkinter.Frame):
         self.i = None
         self.id_list = []
         self.is_init = False
+        self.meta = None
         self.notes = []
         self.since_id = ""
         self.master.geometry(str(MiConfig.WIDTH) + "x" + str(MiConfig.HEIGHT))
         self.master.title(MiConfig.TITLE)
         self.master.resizable(0, 0)
+        self.master.configure(bg = "#ffffff")
         photo = tkinter.PhotoImage(file = "./assets/icon.png")
         self.master.iconphoto(False, photo)
 
+        self.server_background_image = None
+        self.server_background = tkinter.Canvas(self.master, bg = "#ffffff")
+        self.server_background.place(x = 0, y = 0, w = 250, h = 80)
+        self.server_icon_image = None
+        self.server_icon = tkinter.Canvas(self.master)
+        self.server_icon.place(x = 106, y = 21, w = 38, h = 38)
+        self.menu_button_timeline = tkinter.Button(self.master, text = "タイムライン")
+        self.menu_button_timeline.place(x = 0, y = 80, w = 250, h = 30)
+
         self.timeline = tkinter.ttk.Treeview(self.master, columns = (1, 2, 3, 4), show = "")
-        self.timeline.column(1, width = 200, anchor = "nw")
-        self.timeline.column(2, width = 200, anchor = "nw")
-        self.timeline.column(3, width = 400, anchor = "nw")
-        self.timeline.column(4, width = 200, anchor = "nw")
-        self.timeline.place(x = 0, y = 0, w = MiConfig.WIDTH, h = MiConfig.HEIGHT - 60)
+        self.timeline.column(1, width = 150, anchor = "nw")
+        self.timeline.column(2, width = 150, anchor = "nw")
+        self.timeline.column(3, width = 300, anchor = "nw")
+        self.timeline.column(4, width = 150, anchor = "nw")
+        self.timeline.place(x = 250, y = 0, w = MiConfig.WIDTH - 250, h = MiConfig.HEIGHT - 60)
         
-        self.profile_image = None
+        self.profile_icon_image = None
         self.profile_icon = tkinter.Canvas(self.master)
         self.profile_icon.place(x = 6, y = MiConfig.HEIGHT - 54, w = 48, h = 48)
-        self.profile_name = tkinter.Label(self.master, font = ("sans-serif", "12", "bold"), fg = "#000000")
+        self.profile_name = tkinter.Label(self.master, font = ("sans-serif", "12", "bold"), fg = "#000000", bg = "#ffffff")
         self.profile_name.place(x = 60, y = MiConfig.HEIGHT - 48)
-        self.profile_id = tkinter.Label(self.master, font = ("sans-serif", "10"), fg = "#757575")
+        self.profile_id = tkinter.Label(self.master, font = ("sans-serif", "10"), fg = "#757575", bg = "#ffffff")
         self.profile_id.place(x = 60, y = MiConfig.HEIGHT - 30)
 
         self.note_entry = scrolledtext.ScrolledText(self.master)
