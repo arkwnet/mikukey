@@ -90,39 +90,57 @@ class Application(tkinter.Frame):
         self.since_id = ""
         self.master.geometry(str(MiConfig.WIDTH) + "x" + str(MiConfig.HEIGHT))
         self.master.title(MiConfig.TITLE)
-        self.master.resizable(0, 0)
         self.master.configure(bg = "#ffffff")
         photo = tkinter.PhotoImage(file = "./assets/icon.png")
         self.master.iconphoto(False, photo)
 
+        self.frame_left = tkinter.Frame(self.master, bg = "#ffffff", width = 250)
+        self.frame_left.propagate(False)
+        self.frame_left.pack(side = tkinter.LEFT, fill = tkinter.Y)
+
+        self.frame_left_server = tkinter.Frame(self.frame_left, bg = "#ffffff", height = 80)
+        self.frame_left_server.propagate(False)
+        self.frame_left_server.pack(anchor = tkinter.NW, fill = tkinter.X)
         self.server_background_image = None
-        self.server_background = tkinter.Canvas(self.master, bg = "#ffffff")
+        self.server_background = tkinter.Canvas(self.frame_left_server, bg = "#ffffff")
         self.server_background.place(x = 0, y = 0, w = 250, h = 80)
         self.server_icon_image = None
-        self.server_icon = tkinter.Canvas(self.master)
+        self.server_icon = tkinter.Canvas(self.frame_left_server)
         self.server_icon.place(x = 106, y = 21, w = 38, h = 38)
-        self.menu_button_timeline = tkinter.Button(self.master, text = "タイムライン")
-        self.menu_button_timeline.place(x = 0, y = 80, w = 250, h = 30)
 
-        self.timeline = tkinter.ttk.Treeview(self.master, columns = (1, 2, 3, 4), show = "")
+        self.frame_left_menu = tkinter.Frame(self.frame_left, bg = "#ffffff")
+        self.frame_left_menu.pack(anchor = tkinter.NW, expand = True, fill = tkinter.BOTH)
+        self.menu_button_timeline = tkinter.Button(self.frame_left_menu, text = "タイムライン")
+        self.menu_button_timeline.place(x = 0, y = 0, w = 250, h = 30)
+
+        self.frame_left_profile = tkinter.Frame(self.frame_left, bg = "#ffffff", height = 60)
+        self.frame_left_profile.propagate(False)
+        self.frame_left_profile.pack(anchor = tkinter.SW, fill = tkinter.X)
+        self.profile_icon_image = None
+        self.profile_icon = tkinter.Canvas(self.frame_left_profile)
+        self.profile_icon.place(x = 6, y = 6, w = 48, h = 48)
+        self.profile_name = tkinter.Label(self.frame_left_profile, font = ("sans-serif", "12", "bold"), fg = "#000000", bg = "#ffffff")
+        self.profile_name.place(x = 60, y = 12)
+        self.profile_id = tkinter.Label(self.frame_left_profile, font = ("sans-serif", "10"), fg = "#757575", bg = "#ffffff")
+        self.profile_id.place(x = 60, y = 30)
+
+        self.frame_right = tkinter.Frame(self.master, bg = "#ffffff")
+        self.frame_right.pack(side = tkinter.LEFT, fill = tkinter.BOTH)
+
+        self.timeline = tkinter.ttk.Treeview(self.frame_right, columns = (1, 2, 3, 4), show = "")
         self.timeline.column(1, width = 150, anchor = "nw")
         self.timeline.column(2, width = 150, anchor = "nw")
         self.timeline.column(3, width = 300, anchor = "nw")
         self.timeline.column(4, width = 150, anchor = "nw")
-        self.timeline.place(x = 250, y = 0, w = MiConfig.WIDTH - 250, h = MiConfig.HEIGHT - 60)
-        
-        self.profile_icon_image = None
-        self.profile_icon = tkinter.Canvas(self.master)
-        self.profile_icon.place(x = 6, y = MiConfig.HEIGHT - 54, w = 48, h = 48)
-        self.profile_name = tkinter.Label(self.master, font = ("sans-serif", "12", "bold"), fg = "#000000", bg = "#ffffff")
-        self.profile_name.place(x = 60, y = MiConfig.HEIGHT - 48)
-        self.profile_id = tkinter.Label(self.master, font = ("sans-serif", "10"), fg = "#757575", bg = "#ffffff")
-        self.profile_id.place(x = 60, y = MiConfig.HEIGHT - 30)
+        self.timeline.pack(anchor = tkinter.NW, expand = True, fill = tkinter.BOTH)
 
-        self.note_entry = scrolledtext.ScrolledText(self.master)
-        self.note_entry.place(x = 250, y = MiConfig.HEIGHT - 60, w = MiConfig.WIDTH - 350, h = 60)
-        self.note_button_post = tkinter.Button(self.master, text = "ノート", command = self.post)
-        self.note_button_post.place(x = MiConfig.WIDTH - 100, y = MiConfig.HEIGHT - 30, w = 100, h = 30)
+        self.frame_right_note = tkinter.Frame(self.frame_right, bg = "#ffffff", height = 60)
+        self.frame_right_note.propagate(False)
+        self.frame_right_note.pack(anchor = tkinter.SW, fill = tkinter.X)
+        self.note_entry = scrolledtext.ScrolledText(self.frame_right_note)
+        self.note_entry.place(x = 0, y = 0, w = 650, h = 60)
+        self.note_button_post = tkinter.Button(self.frame_right_note, text = "ノート", command = self.post, width = 100, height = 30)
+        self.note_button_post.place(x = 650, y = 30, w = 100, h = 30)
 
         self.loop()
         self.master.mainloop()
