@@ -125,7 +125,7 @@ class Application(tkinter.Frame):
         self.profile_id.place(x = 60, y = 30)
 
         self.frame_right = tkinter.Frame(self.master, bg = "#ffffff")
-        self.frame_right.pack(side = tkinter.LEFT, fill = tkinter.BOTH)
+        self.frame_right.pack(side = tkinter.LEFT, expand = True, fill = tkinter.BOTH)
 
         self.timeline = tkinter.ttk.Treeview(self.frame_right, columns = (1, 2, 3, 4), show = "")
         self.timeline.column(1, width = 150, anchor = "nw")
