@@ -14,15 +14,25 @@ class Application(tkinter.Frame):
         if self.is_init == False:
             if os.path.isdir("temp") == False:
                 os.mkdir("temp")
+
             self.meta = MiMeta.Meta(MiAPI.call("meta", {}))
             MiAPI.download(self.meta.icon_url, "temp/server_icon.png")
-            image = Image.open("temp/server_icon.png")                                 
+            image = Image.open("temp/server_icon.png")
             image = image.resize((38, 38))
             self.server_icon_image = ImageTk.PhotoImage(image)
             self.server_icon.create_image(0, 0, image = self.server_icon_image, anchor = tkinter.NW)
+            MiAPI.download(self.meta.banner_url, "temp/server_banner.png")
+            image = Image.open("temp/server_banner.png")
+            image = image.resize((int(image.width * (250 / image.width)), int(image.height * (250 / image.width))))
+            image = image.crop((0, image.height / 2 - 40, 250, image.height / 2 + 40))
+            image_cover = Image.new("RGB", image.size, (255, 255, 255))
+            image = Image.blend(image, image_cover, 0.5)
+            self.server_banner_image = ImageTk.PhotoImage(image)
+            self.server_banner.create_image(0, 0, image = self.server_banner_image, anchor = tkinter.NW)
+
             self.i = MiProfile.Profile(MiAPI.i())
             MiAPI.download(self.i.avatar_url, "temp/profile_icon.png")
-            image = Image.open("temp/profile_icon.png")                                 
+            image = Image.open("temp/profile_icon.png")
             image = image.resize((48, 48))
             self.profile_icon_image = ImageTk.PhotoImage(image)
             self.profile_icon.create_image(0, 0, image = self.profile_icon_image, anchor = tkinter.NW)
@@ -101,9 +111,9 @@ class Application(tkinter.Frame):
         self.frame_left_server = tkinter.Frame(self.frame_left, bg = "#ffffff", height = 80)
         self.frame_left_server.propagate(False)
         self.frame_left_server.pack(anchor = tkinter.NW, fill = tkinter.X)
-        self.server_background_image = None
-        self.server_background = tkinter.Canvas(self.frame_left_server, bg = "#ffffff")
-        self.server_background.place(x = 0, y = 0, w = 250, h = 80)
+        self.server_banner_image = None
+        self.server_banner = tkinter.Canvas(self.frame_left_server, bg = "#ffffff")
+        self.server_banner.place(x = 0, y = 0, w = 250, h = 80)
         self.server_icon_image = None
         self.server_icon = tkinter.Canvas(self.frame_left_server)
         self.server_icon.place(x = 106, y = 21, w = 38, h = 38)
